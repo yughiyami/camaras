@@ -1,8 +1,12 @@
 using UnityEngine;
 using UnityEngine.AI;
+using System;
 
 public class PossessionManager : MonoBehaviour
 {
+    // EVENTO PÚBLICO: Avisa a las cámaras cuando tomamos control de un nuevo animal
+    public static Action<Transform> OnCharacterPossessed;
+
     private Fighter currentPossessedFighter;
 
     void Update()
@@ -64,7 +68,7 @@ public class PossessionManager : MonoBehaviour
 
         Debug.Log("Has poseído a: " + newFighter.gameObject.name);
 
-        // --- ACÁ TU COMPAÑERO DEBE ENGANCHAR LA CÁMARA ---
-        // Ejemplo: FindObjectOfType<CameraManager>().SetTarget(currentPossessedFighter.transform);
+        // Disparamos el evento para que las cámaras reaccionen
+        OnCharacterPossessed?.Invoke(currentPossessedFighter.transform);
     }
 }

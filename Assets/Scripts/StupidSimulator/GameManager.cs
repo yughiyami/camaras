@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,16 +16,27 @@ public class GameManager : MonoBehaviour
 
     void SpawnAnimals()
     {
-        if (animalPrefabs.Length == 0)
+        // 1. Tomamos los animales que el usuario eligió en el menú
+        List<GameObject> animalesElegidos = GlobalSettings.SelectedAnimals;
+
+        // 2. Si entramos directo a la escena (sin pasar por el menú) y la lista está vacía, usamos los del inspector por defecto
+        if (animalesElegidos == null || animalesElegidos.Count == 0)
         {
-            Debug.LogWarning("No asignaste prefabs de animales en el GameManager.");
-            return;
+            if (animalPrefabs.Length > 0)
+            {
+                animalesElegidos = new List<GameObject>(animalPrefabs);
+            }
+            else
+            {
+                Debug.LogWarning("No hay animales elegidos ni prefabs por defecto.");
+                return;
+            }
         }
 
         for (int i = 0; i < numberOfAnimalsToSpawn; i++)
         {
-            // Elegir un prefab al azar
-            GameObject prefabToSpawn = animalPrefabs[Random.Range(0, animalPrefabs.Length)];
+            // Elegir un prefab al azar de la lista elegida
+            GameObject prefabToSpawn = animalesElegidos[Random.Range(0, animalesElegidos.Count)];
 
             // Buscar un punto válido en el NavMesh cerca del GameManager
             Vector3 randomPos = Random.insideUnitSphere * spawnRadius;
