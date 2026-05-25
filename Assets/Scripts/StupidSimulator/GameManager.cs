@@ -2,16 +2,35 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
 
+public enum GameState
+{
+    Preparation,
+    Battle
+}
+
 public class GameManager : MonoBehaviour
 {
+    public static GameState CurrentState { get; private set; }
+
     [Header("Spawning Settings")]
     public GameObject[] animalPrefabs; // Asignar los prefabs de animals_FREE acá
-    public int numberOfAnimalsToSpawn = 15;
-    public float spawnRadius = 25f;
+    public int numberOfAnimalsToSpawn = 30; // Más animales
+    public float spawnRadius = 10f; // Más apretados
 
     void Start()
     {
+        CurrentState = GameState.Preparation; // Arranca congelado
         SpawnAnimals();
+    }
+
+    void Update()
+    {
+        // Apretar ENTER para empezar a pelear
+        if (CurrentState == GameState.Preparation && Input.GetKeyDown(KeyCode.Return))
+        {
+            CurrentState = GameState.Battle;
+            Debug.Log("<color=red>¡EMPIEZA LA BATALLA!</color>");
+        }
     }
 
     void SpawnAnimals()

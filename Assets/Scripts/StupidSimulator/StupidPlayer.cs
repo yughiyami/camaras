@@ -4,10 +4,12 @@ using UnityEngine.AI;
 public class StupidPlayer : MonoBehaviour
 {
     public float moveSpeed = 5f;
-    public float turnSpeed = 700f;
+    public float turnSpeed = 150f; // Ajustado para girar con A y D suavemente
     
     private NavMeshAgent agent;
     private Animator animator;
+
+    private float attackAnimTimer = 0f;
 
     void Start()
     {
@@ -17,37 +19,46 @@ public class StupidPlayer : MonoBehaviour
 
     void Update()
     {
-        // Leer input (WASD / Flechas)
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
+        // Leer input suave
+        float horizontal = Input.GetAxis("Horizontal"); // A/D (Izquierda/Derecha)
+        float vertical = Input.GetAxis("Vertical");     // W/S (Adelante/Atrás)
 
-        Vector3 moveDirection = new Vector3(horizontal, 0f, vertical).normalized;
+        // 1. Rotar sobre su propio eje (Como un volante)
+        transform.Rotate(0, horizontal * turnSpeed * Time.deltaTime, 0);
 
-        if (moveDirection.magnitude > 0.1f)
+        // 2. Mover hacia ADELANTE o ATRÁS según su propia orientación
+        Vector3 moveDirection = transform.forward * vertical;
+        
+        if (agent != null && agent.enabled)
         {
-            // Rotar hacia donde nos movemos
-            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+            agent.Move(moveDirection * moveSpeed * Time.deltaTime);
+        }
+        else
+        {
+            transform.Translate(moveDirection * moveSpeed * Time.deltaTime, Space.World);
+        }
 
-            // Mover (usamos transform.Translate o pasamos velocidad al agente para respetar colisiones)
-            if (agent != null && agent.enabled)
+        // 3. Animación Inteligente y Hack de Ataque
+        if (animator != null)
+        {
+            animator.speed = 1f; // Reseteamos la velocidad por la limitación de Unity
+            
+            if (attackAnimTimer > 0)
             {
-                agent.Move(moveDirection * moveSpeed * Time.deltaTime);
+                // HACK: Forzamos la animación de correr al máximo mientras está quieto atacando
+                animator.SetFloat("Vert", moveSpeed * 2f); 
+                attackAnimTimer -= Time.deltaTime;
             }
             else
             {
-                transform.Translate(moveDirection * moveSpeed * Time.deltaTime, Space.World);
+                // Le mandamos la velocidad en positivo para que camine normal
+                float speedMag = Mathf.Abs(vertical) * moveSpeed;
+                animator.SetFloat("Vert", speedMag);
             }
         }
 
-        // Animación
-        if (animator != null)
-        {
-            animator.SetFloat("Vert", moveDirection.magnitude * moveSpeed);
-        }
-
         // --- SISTEMA BÁSICO DE ATAQUE ---
-        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.E))
         {
             Attack();
         }
@@ -55,10 +66,7 @@ public class StupidPlayer : MonoBehaviour
 
     void Attack()
     {
-        if (animator != null)
-        {
-            animator.SetTrigger("Attack"); // Asegurate de tener un trigger "Attack" en tu Animator
-        }
+        attackAnimTimer = 0.3f; // Tiempo que dura el "falso ataque" moviendo las patas rápido
 
         // Detectar enemigos en frente
         Collider[] hits = Physics.OverlapSphere(transform.position + transform.forward * 1f, 1.5f);
@@ -69,7 +77,7 @@ public class StupidPlayer : MonoBehaviour
                 Fighter enemy = hit.GetComponent<Fighter>();
                 if (enemy != null)
                 {
-                    enemy.TakeDamage(25f);
+                    enemy.TakeDamage(1f);
                     Debug.Log("Le pegaste a: " + enemy.gameObject.name);
                 }
             }

@@ -1184,10 +1184,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 885a5b27d658ad845a617df7ed65bf43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Fighter
-  maxHealth: 100
+  maxHealth: 50
   isPlayerControlled: 0
-  wanderRadius: 15
-  wanderInterval: 5
+  attackRange: 2.5
+  attackCooldown: 1.5
+  aggroRadius: 5
+  wanderRadius: 10
+  wanderInterval: 4
 --- !u!114 &-103484965861022625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1202,6 +1205,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Fighter
   maxHealth: 100
   isPlayerControlled: 0
+  attackRange: 2.5
+  attackCooldown: 1.5
+  aggroRadius: 15
   wanderRadius: 10
   wanderInterval: 4
 --- !u!64 &6226622254998939846
@@ -1220,7 +1226,7 @@ MeshCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
-  m_ProvidesContacts: 0
+  m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 5
   m_Convex: 1
