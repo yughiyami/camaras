@@ -153,9 +153,12 @@ public class MazeGenerator : MonoBehaviour
         // wall.transform.localScale = new Vector3(cellSize, wall.transform.localScale.y, wall.transform.localScale.z);
 
         // PREPARACIÓN PARA IA:
-        // Marcamos el objeto como Navigation Static para que el NavMesh lo reconozca al hornear.
+        // En versiones modernas de Unity (AI Navigation), no es necesario marcar como NavigationStatic.
+        // El NavMeshSurface recogerá los objetos según su capa o jerarquía.
+        /*
         #if UNITY_EDITOR
         GameObjectUtility.SetStaticEditorFlags(wall, StaticEditorFlags.NavigationStatic);
         #endif
+        */
     }
 }

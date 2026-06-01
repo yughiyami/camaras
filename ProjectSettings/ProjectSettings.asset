@@ -923,7 +923,13 @@ PlayerSettings:
   XboxOneOverrideIdentityName: 
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
-  cloudServicesEnabled: {}
+  cloudServicesEnabled:
+    Build: 0
+    Game Performance: 0
+    Legacy Analytics: 0
+    Purchasing: 0
+    UDP: 0
+    Unity Ads: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -946,11 +952,11 @@ PlayerSettings:
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
   enableDirectStorage: 0
-  cloudProjectId: 4555a812-043f-4703-88fd-402a356508d4
+  cloudProjectId: c41d3e17-45b9-4c30-8492-e3b4116f22ff
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: camaras
-  organizationId: jdael
+  organizationId: yugiyami
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

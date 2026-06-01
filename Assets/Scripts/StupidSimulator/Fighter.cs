@@ -125,7 +125,7 @@ public class Fighter : MonoBehaviour
 
     void FindClosestEnemy()
     {
-        Fighter[] allFighters = FindObjectsByType<Fighter>(FindObjectsSortMode.None);
+        Fighter[] allFighters = Object.FindObjectsByType<Fighter>(FindObjectsInactive.Exclude);
         float closestDistance = Mathf.Infinity;
         targetEnemy = null;
 
